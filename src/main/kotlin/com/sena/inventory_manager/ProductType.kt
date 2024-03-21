@@ -5,14 +5,7 @@ import jakarta.persistence.*
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDateTime
 
@@ -26,9 +19,9 @@ class ProductType (
     var createdOn: LocalDateTime = LocalDateTime.now(),
     var updatedOn: LocalDateTime = LocalDateTime.now(),
 
-    /*@OneToMany(mappedBy = "city")
+    @OneToMany(mappedBy = "productType")
     @JsonIgnore
-    val locations: List<Location> = mutableListOf()*/
+    val products: List<Product> = mutableListOf()
 )
 
 interface ProductTypeRepository : JpaRepository<ProductType, Long>
@@ -62,6 +55,7 @@ class ProductTypeService(private val repository: ProductTypeRepository){
 }
 
 @RestController
+@CrossOrigin
 @RequestMapping("/product_type")
 class ProductTypeController(val service: ProductTypeService){
 
@@ -69,7 +63,7 @@ class ProductTypeController(val service: ProductTypeService){
     fun all(): MutableList<ProductType> = service.findAll()
 
     @GetMapping("/{id}")
-    fun get(@PathVariable id: Long): ProductType = service.findById(id)
+    fun get(@PathVariable id: Long): ProductType =  if(id > 0L) service.findById(id) else ProductType(description = "")
 
     @PostMapping
     fun new(@RequestBody body: ProductType): ProductType = service.new(body)

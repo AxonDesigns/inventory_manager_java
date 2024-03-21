@@ -7,14 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDateTime
 
@@ -64,6 +57,7 @@ class DepartmentService(private val repository: DepartmentRepository){
 }
 
 @RestController
+@CrossOrigin
 @RequestMapping("/department")
 class DepartmentController(val service: DepartmentService){
 
@@ -71,7 +65,7 @@ class DepartmentController(val service: DepartmentService){
     fun all(): MutableList<Department> = service.findAll()
 
     @GetMapping("/{id}")
-    fun get(@PathVariable id: Long): Department = service.findById(id)
+    fun get(@PathVariable id: Long): Department = if(id > 0L) service.findById(id) else Department(description = "")
 
     @PostMapping
     fun new(@RequestBody body: Department): Department = service.new(body)

@@ -7,14 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDateTime
 
@@ -64,6 +57,7 @@ class LocationTypeService(private val repository: LocationTypeRepository){
 }
 
 @RestController
+@CrossOrigin
 @RequestMapping("/location_type")
 class LocationTypeController(val service: LocationTypeService){
 
@@ -71,7 +65,7 @@ class LocationTypeController(val service: LocationTypeService){
     fun all(): MutableList<LocationType> = service.findAll()
 
     @GetMapping("/{id}")
-    fun get(@PathVariable id: Long): LocationType = service.findById(id)
+    fun get(@PathVariable id: Long): LocationType = if(id > 0L) service.findById(id) else LocationType(description = "")
 
     @PostMapping
     fun new(@RequestBody body: LocationType): LocationType = service.new(body)

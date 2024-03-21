@@ -5,6 +5,7 @@ import jakarta.persistence.*
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -62,6 +63,7 @@ class CityService(private val repository: CityRepository){
 }
 
 @RestController
+@CrossOrigin
 @RequestMapping("/city")
 class CityController(val service: CityService){
 
@@ -69,19 +71,15 @@ class CityController(val service: CityService){
     fun all(): MutableList<City> = service.findAll()
 
     @GetMapping("/{id}")
-    fun get(@PathVariable id: Long): City = service.findById(id)
+    fun get(@PathVariable id: Long): City = if(id > 0L) service.findById(id) else City(description = "")
 
     @PostMapping
     fun new(@RequestBody body: City): City = service.new(body)
 
     @PutMapping("/{id}")
-    fun update(@RequestBody body: City, @PathVariable id: Long): City {
-        return service.update(body, id)
-    }
+    fun update(@RequestBody body: City, @PathVariable id: Long): City = service.update(body, id)
+
 
     @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Long) {
-        service.delete(id)
-    }
-
+    fun delete(@PathVariable id: Long) = service.delete(id)
 }

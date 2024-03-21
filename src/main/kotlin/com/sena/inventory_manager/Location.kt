@@ -4,14 +4,7 @@ import jakarta.persistence.*
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDateTime
 
@@ -33,12 +26,10 @@ class Location (
 )
 
 class LocationRequest(
-    var id: Long? = null,
-    var description: String,
-    var cityId: Long,
-    var departmentId: Long,
-    var locationTypeId: Long,
-    var updatedOn: LocalDateTime = LocalDateTime.now()
+    var description: String?,
+    var cityId: Long?,
+    var departmentId: Long?,
+    var locationTypeId: Long?,
 )
 
 interface LocationRepository : JpaRepository<Location, Long>
@@ -58,19 +49,19 @@ class LocationService(
     }
 
     fun new(body: LocationRequest): Location {
-        val city = cityRepository.findById(body.cityId).orElseThrow{
+        val city = cityRepository.findById(body.cityId!!).orElseThrow{
             throw ResponseStatusException(HttpStatus.NOT_FOUND)
         }
 
-        val department = departmentRepository.findById(body.departmentId).orElseThrow{
+        val department = departmentRepository.findById(body.departmentId!!).orElseThrow{
             throw ResponseStatusException(HttpStatus.NOT_FOUND)
         }
 
-        val locationType = locationTypeRepository.findById(body.locationTypeId).orElseThrow{
+        val locationType = locationTypeRepository.findById(body.locationTypeId!!).orElseThrow{
             throw ResponseStatusException(HttpStatus.NOT_FOUND)
         }
 
-        return repository.save(Location(null, body.description, city, department, locationType))
+        return repository.save(Location(null, body.description!!, city!!, department!!, locationType!!))
     }
 
     fun update(body: LocationRequest, id: Long): Location {
@@ -78,22 +69,22 @@ class LocationService(
             throw ResponseStatusException(HttpStatus.NOT_FOUND)
         }
 
-        val city = cityRepository.findById(body.cityId).orElseThrow{
+        val city = if(body.cityId != null) cityRepository.findById(body.cityId!!).orElseThrow{
             throw ResponseStatusException(HttpStatus.NOT_FOUND)
-        }
+        } else null
 
-        val department = departmentRepository.findById(body.departmentId).orElseThrow{
+        val department = if(body.departmentId != null) departmentRepository.findById(body.departmentId!!).orElseThrow{
             throw ResponseStatusException(HttpStatus.NOT_FOUND)
-        }
+        } else null
 
-        val locationType = locationTypeRepository.findById(body.locationTypeId).orElseThrow{
+        val locationType = if(body.locationTypeId != null) locationTypeRepository.findById(body.locationTypeId!!).orElseThrow{
             throw ResponseStatusException(HttpStatus.NOT_FOUND)
-        }
+        } else null
 
-        entity.description = body.description
-        entity.city = city
-        entity.department = department
-        entity.locationType = locationType
+        entity.description = body.description ?: entity.description
+        entity.city = city ?: entity.city
+        entity.department = department ?: entity.department
+        entity.locationType = locationType ?: entity.locationType
         entity.updatedOn = LocalDateTime.now()
 
         return repository.save(entity)
@@ -105,6 +96,7 @@ class LocationService(
 }
 
 @RestController
+@CrossOrigin
 @RequestMapping("/location")
 class LocationController(val service: LocationService){
 
@@ -112,7 +104,13 @@ class LocationController(val service: LocationService){
     fun all(): MutableList<Location> = service.findAll()
 
     @GetMapping("/{id}")
-    fun get(@PathVariable id: Long): Location = service.findById(id)
+    fun get(@PathVariable id: Long): Location = if(id > 0L) service.findById(id) else
+        Location(
+            description = "",
+            city = City(description = ""),
+            department = Department(description = ""),
+            locationType = LocationType(description = ""),
+            )
 
     @PostMapping
     fun new(@RequestBody body: LocationRequest): Location = service.new(body)
