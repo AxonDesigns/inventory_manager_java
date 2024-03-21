@@ -5,6 +5,7 @@ import jakarta.persistence.*
 import org.jetbrains.annotations.NotNull
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.http.HttpStatus
+import org.springframework.stereotype.Service
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -34,29 +35,22 @@ class ProductState (
 
 interface ProductStateRepository : JpaRepository<ProductState, Long>
 
-@RestController
-@RequestMapping("/product_state")
-class ProductStateController(val repository: ProductStateRepository){
+@Service
+class ProductStateService(private val repository: ProductStateRepository){
 
-    @GetMapping
-    fun all(): MutableList<ProductState> = repository.findAll()
+    fun findAll(): MutableList<ProductState> = repository.findAll()
 
-    @GetMapping("/{id}")
-    fun get(@PathVariable id: Long): ProductState = repository.findById(id).orElseThrow{
+    fun findById(id: Long): ProductState = repository.findById(id).orElseThrow{
         throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @PostMapping
-    fun new(@RequestBody body: ProductState): ProductState {
+    fun new(body: ProductState): ProductState {
         body.id = null
         return repository.save(body)
     }
 
-    @PutMapping("/{id}")
-    fun update(@RequestBody body: ProductState, @PathVariable id: Long): ProductState {
-        val entity = repository.findById(id).orElseThrow{
-            throw ResponseStatusException(HttpStatus.NOT_FOUND)
-        }
+    fun update(body: ProductState, id: Long): ProductState {
+        val entity = findById(id)
 
         entity.description = body.description
         entity.updatedOn = LocalDateTime.now()
@@ -64,9 +58,28 @@ class ProductStateController(val repository: ProductStateRepository){
         return repository.save(entity)
     }
 
-    @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Long) {
+    fun delete(id: Long) {
         repository.deleteById(id)
     }
+}
+
+@RestController
+@RequestMapping("/product_state")
+class ProductStateController(val service: ProductStateService){
+
+    @GetMapping
+    fun all(): MutableList<ProductState> = service.findAll()
+
+    @GetMapping("/{id}")
+    fun get(@PathVariable id: Long): ProductState = service.findById(id)
+
+    @PostMapping
+    fun new(@RequestBody body: ProductState): ProductState = service.new(body)
+
+    @PutMapping("/{id}")
+    fun update(@RequestBody body: ProductState, @PathVariable id: Long): ProductState = service.update(body, id)
+
+    @DeleteMapping("/{id}")
+    fun delete(@PathVariable id: Long) = service.delete(id)
 
 }

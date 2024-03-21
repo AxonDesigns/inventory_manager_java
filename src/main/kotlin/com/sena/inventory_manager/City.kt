@@ -2,10 +2,9 @@ package com.sena.inventory_manager
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
-import org.jetbrains.annotations.NotNull
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.http.HttpStatus
-import org.springframework.validation.annotation.Validated
+import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -34,29 +33,22 @@ class City (
 
 interface CityRepository : JpaRepository<City, Long>
 
-@RestController
-@RequestMapping("/city")
-class CityController(val repository: CityRepository){
+@Service
+class CityService(private val repository: CityRepository){
 
-    @GetMapping
-    fun all(): MutableList<City> = repository.findAll()
+    fun findAll(): MutableList<City> = repository.findAll()
 
-    @GetMapping("/{id}")
-    fun get(@PathVariable id: Long): City = repository.findById(id).orElseThrow{
+    fun findById(id: Long): City = repository.findById(id).orElseThrow{
         throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @PostMapping
-    fun new(@RequestBody body: City): City {
+    fun new(body: City): City {
         body.id = null
         return repository.save(body)
     }
 
-    @PutMapping("/{id}")
-    fun update(@RequestBody body: City, @PathVariable id: Long): City {
-        val entity = repository.findById(id).orElseThrow{
-            throw ResponseStatusException(HttpStatus.NOT_FOUND)
-        }
+    fun update(body: City, id: Long): City {
+        val entity = findById(id)
 
         entity.description = body.description
         entity.updatedOn = LocalDateTime.now()
@@ -64,9 +56,32 @@ class CityController(val repository: CityRepository){
         return repository.save(entity)
     }
 
+    fun delete(id: Long) {
+        repository.deleteById(id)
+    }
+}
+
+@RestController
+@RequestMapping("/city")
+class CityController(val service: CityService){
+
+    @GetMapping
+    fun all(): MutableList<City> = service.findAll()
+
+    @GetMapping("/{id}")
+    fun get(@PathVariable id: Long): City = service.findById(id)
+
+    @PostMapping
+    fun new(@RequestBody body: City): City = service.new(body)
+
+    @PutMapping("/{id}")
+    fun update(@RequestBody body: City, @PathVariable id: Long): City {
+        return service.update(body, id)
+    }
+
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Long) {
-        repository.deleteById(id)
+        service.delete(id)
     }
 
 }

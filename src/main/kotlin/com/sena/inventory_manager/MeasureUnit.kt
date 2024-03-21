@@ -5,6 +5,7 @@ import jakarta.persistence.*
 import org.jetbrains.annotations.NotNull
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.http.HttpStatus
+import org.springframework.stereotype.Service
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -34,29 +35,22 @@ class MeasureUnit (
 
 interface MeasureUnitRepository : JpaRepository<MeasureUnit, Long>
 
-@RestController
-@RequestMapping("/measure_unit")
-class MeasureUnitController(val repository: MeasureUnitRepository){
+@Service
+class MeasureUnitService(private val repository: MeasureUnitRepository){
 
-    @GetMapping
-    fun all(): MutableList<MeasureUnit> = repository.findAll()
+    fun findAll(): MutableList<MeasureUnit> = repository.findAll()
 
-    @GetMapping("/{id}")
-    fun get(@PathVariable id: Long): MeasureUnit = repository.findById(id).orElseThrow{
+    fun findById(id: Long): MeasureUnit = repository.findById(id).orElseThrow{
         throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @PostMapping
-    fun new(@RequestBody body: MeasureUnit): MeasureUnit {
+    fun new(body: MeasureUnit): MeasureUnit {
         body.id = null
         return repository.save(body)
     }
 
-    @PutMapping("/{id}")
-    fun update(@RequestBody body: MeasureUnit, @PathVariable id: Long): MeasureUnit {
-        val entity = repository.findById(id).orElseThrow{
-            throw ResponseStatusException(HttpStatus.NOT_FOUND)
-        }
+    fun update(body: MeasureUnit, id: Long): MeasureUnit {
+        val entity = findById(id)
 
         entity.description = body.description
         entity.updatedOn = LocalDateTime.now()
@@ -64,9 +58,28 @@ class MeasureUnitController(val repository: MeasureUnitRepository){
         return repository.save(entity)
     }
 
-    @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Long) {
+    fun delete(id: Long) {
         repository.deleteById(id)
     }
+}
+
+@RestController
+@RequestMapping("/measure_unit")
+class MeasureUnitController(val service: MeasureUnitService){
+
+    @GetMapping
+    fun all(): MutableList<MeasureUnit> = service.findAll()
+
+    @GetMapping("/{id}")
+    fun get(@PathVariable id: Long): MeasureUnit = service.findById(id)
+
+    @PostMapping
+    fun new(@RequestBody body: MeasureUnit): MeasureUnit = service.new(body)
+
+    @PutMapping("/{id}")
+    fun update(@RequestBody body: MeasureUnit, @PathVariable id: Long): MeasureUnit = service.update(body, id)
+
+    @DeleteMapping("/{id}")
+    fun delete(@PathVariable id: Long) = service.delete(id)
 
 }

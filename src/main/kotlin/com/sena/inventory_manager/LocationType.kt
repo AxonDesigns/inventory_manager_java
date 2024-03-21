@@ -5,6 +5,7 @@ import jakarta.persistence.*
 import org.jetbrains.annotations.NotNull
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.http.HttpStatus
+import org.springframework.stereotype.Service
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -34,29 +35,22 @@ class LocationType (
 
 interface LocationTypeRepository : JpaRepository<LocationType, Long>
 
-@RestController
-@RequestMapping("/location_type")
-class LocationTypeController(val repository: LocationTypeRepository){
+@Service
+class LocationTypeService(private val repository: LocationTypeRepository){
 
-    @GetMapping
-    fun all(): MutableList<LocationType> = repository.findAll()
+    fun findAll(): MutableList<LocationType> = repository.findAll()
 
-    @GetMapping("/{id}")
-    fun get(@PathVariable id: Long): LocationType = repository.findById(id).orElseThrow{
+    fun findById(id: Long): LocationType = repository.findById(id).orElseThrow{
         throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @PostMapping
-    fun new(@RequestBody body: LocationType): LocationType {
+    fun new(body: LocationType): LocationType {
         body.id = null
         return repository.save(body)
     }
 
-    @PutMapping("/{id}")
-    fun update(@RequestBody body: LocationType, @PathVariable id: Long): LocationType {
-        val entity = repository.findById(id).orElseThrow{
-            throw ResponseStatusException(HttpStatus.NOT_FOUND)
-        }
+    fun update(body: LocationType, id: Long): LocationType {
+        val entity = findById(id)
 
         entity.description = body.description
         entity.updatedOn = LocalDateTime.now()
@@ -64,9 +58,29 @@ class LocationTypeController(val repository: LocationTypeRepository){
         return repository.save(entity)
     }
 
-    @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Long) {
+    fun delete(id: Long) {
         repository.deleteById(id)
     }
+}
+
+@RestController
+@RequestMapping("/location_type")
+class LocationTypeController(val service: LocationTypeService){
+
+    @GetMapping
+    fun all(): MutableList<LocationType> = service.findAll()
+
+    @GetMapping("/{id}")
+    fun get(@PathVariable id: Long): LocationType = service.findById(id)
+
+    @PostMapping
+    fun new(@RequestBody body: LocationType): LocationType = service.new(body)
+
+
+    @PutMapping("/{id}")
+    fun update(@RequestBody body: LocationType, @PathVariable id: Long): LocationType = service.update(body, id)
+
+    @DeleteMapping("/{id}")
+    fun delete(@PathVariable id: Long) = service.delete(id)
 
 }

@@ -2,10 +2,9 @@ package com.sena.inventory_manager
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
-import org.jetbrains.annotations.NotNull
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.http.HttpStatus
-import org.springframework.validation.annotation.Validated
+import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -34,29 +33,22 @@ class ProductType (
 
 interface ProductTypeRepository : JpaRepository<ProductType, Long>
 
-@RestController
-@RequestMapping("/product_type")
-class ProductTypeController(val repository: ProductTypeRepository){
+@Service
+class ProductTypeService(private val repository: ProductTypeRepository){
 
-    @GetMapping
-    fun all(): MutableList<ProductType> = repository.findAll()
+    fun findAll(): MutableList<ProductType> = repository.findAll()
 
-    @GetMapping("/{id}")
-    fun get(@PathVariable id: Long): ProductType = repository.findById(id).orElseThrow{
+    fun findById(id: Long): ProductType = repository.findById(id).orElseThrow{
         throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @PostMapping
-    fun new(@RequestBody body: ProductType): ProductType {
+    fun new(body: ProductType): ProductType {
         body.id = null
         return repository.save(body)
     }
 
-    @PutMapping("/{id}")
-    fun update(@RequestBody body: ProductType, @PathVariable id: Long): ProductType {
-        val entity = repository.findById(id).orElseThrow{
-            throw ResponseStatusException(HttpStatus.NOT_FOUND)
-        }
+    fun update(body: ProductType, id: Long): ProductType {
+        val entity = findById(id)
 
         entity.description = body.description
         entity.updatedOn = LocalDateTime.now()
@@ -64,9 +56,28 @@ class ProductTypeController(val repository: ProductTypeRepository){
         return repository.save(entity)
     }
 
-    @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Long) {
+    fun delete(id: Long) {
         repository.deleteById(id)
     }
+}
+
+@RestController
+@RequestMapping("/product_type")
+class ProductTypeController(val service: ProductTypeService){
+
+    @GetMapping
+    fun all(): MutableList<ProductType> = service.findAll()
+
+    @GetMapping("/{id}")
+    fun get(@PathVariable id: Long): ProductType = service.findById(id)
+
+    @PostMapping
+    fun new(@RequestBody body: ProductType): ProductType = service.new(body)
+
+    @PutMapping("/{id}")
+    fun update(@RequestBody body: ProductType, @PathVariable id: Long): ProductType = service.update(body, id)
+
+    @DeleteMapping("/{id}")
+    fun delete(@PathVariable id: Long) = service.delete(id)
 
 }

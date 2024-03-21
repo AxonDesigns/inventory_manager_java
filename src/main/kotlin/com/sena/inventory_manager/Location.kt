@@ -1,10 +1,9 @@
 package com.sena.inventory_manager
 
 import jakarta.persistence.*
-import org.jetbrains.annotations.NotNull
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.http.HttpStatus
-import org.springframework.validation.annotation.Validated
+import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -44,25 +43,21 @@ class LocationRequest(
 
 interface LocationRepository : JpaRepository<Location, Long>
 
-@RestController
-@RequestMapping("/location")
-class LocationController(
-    val repository: LocationRepository,
+@Service
+class LocationService(
+    private val repository: LocationRepository,
     val cityRepository: CityRepository,
     val departmentRepository: DepartmentRepository,
     val locationTypeRepository: LocationTypeRepository
 ){
 
-    @GetMapping
-    fun all(): MutableList<Location> = repository.findAll()
+    fun findAll(): MutableList<Location> = repository.findAll()
 
-    @GetMapping("/{id}")
-    fun get(@PathVariable id: Long): Location = repository.findById(id).orElseThrow{
+    fun findById(id: Long): Location = repository.findById(id).orElseThrow{
         throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @PostMapping
-    fun new(@RequestBody body: LocationRequest): Location {
+    fun new(body: LocationRequest): Location {
         val city = cityRepository.findById(body.cityId).orElseThrow{
             throw ResponseStatusException(HttpStatus.NOT_FOUND)
         }
@@ -78,8 +73,7 @@ class LocationController(
         return repository.save(Location(null, body.description, city, department, locationType))
     }
 
-    @PutMapping("/{id}")
-    fun update(@RequestBody body: LocationRequest, @PathVariable id: Long): Location {
+    fun update(body: LocationRequest, id: Long): Location {
         val entity = repository.findById(id).orElseThrow{
             throw ResponseStatusException(HttpStatus.NOT_FOUND)
         }
@@ -105,9 +99,28 @@ class LocationController(
         return repository.save(entity)
     }
 
-    @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Long) {
+    fun delete(id: Long) {
         repository.deleteById(id)
     }
+}
+
+@RestController
+@RequestMapping("/location")
+class LocationController(val service: LocationService){
+
+    @GetMapping
+    fun all(): MutableList<Location> = service.findAll()
+
+    @GetMapping("/{id}")
+    fun get(@PathVariable id: Long): Location = service.findById(id)
+
+    @PostMapping
+    fun new(@RequestBody body: LocationRequest): Location = service.new(body)
+
+    @PutMapping("/{id}")
+    fun update(@RequestBody body: LocationRequest, @PathVariable id: Long): Location = service.update(body, id)
+
+    @DeleteMapping("/{id}")
+    fun delete(@PathVariable id: Long) = service.delete(id)
 
 }

@@ -5,6 +5,7 @@ import jakarta.persistence.*
 import org.jetbrains.annotations.NotNull
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.http.HttpStatus
+import org.springframework.stereotype.Service
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -34,29 +35,22 @@ class Department (
 
 interface DepartmentRepository : JpaRepository<Department, Long>
 
-@RestController
-@RequestMapping("/department")
-class DepartmentController(val repository: DepartmentRepository){
+@Service
+class DepartmentService(private val repository: DepartmentRepository){
 
-    @GetMapping
-    fun all(): MutableList<Department> = repository.findAll()
+    fun findAll(): MutableList<Department> = repository.findAll()
 
-    @GetMapping("/{id}")
-    fun get(@PathVariable id: Long): Department = repository.findById(id).orElseThrow{
+    fun findById(id: Long): Department = repository.findById(id).orElseThrow{
         throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    @PostMapping
-    fun new(@RequestBody body: Department): Department {
+    fun new(body: Department): Department {
         body.id = null
         return repository.save(body)
     }
 
-    @PutMapping("/{id}")
-    fun update(@RequestBody body: Department, @PathVariable id: Long): Department {
-        val entity = repository.findById(id).orElseThrow{
-            throw ResponseStatusException(HttpStatus.NOT_FOUND)
-        }
+    fun update(body: Department, id: Long): Department {
+        val entity = findById(id)
 
         entity.description = body.description
         entity.updatedOn = LocalDateTime.now()
@@ -64,9 +58,29 @@ class DepartmentController(val repository: DepartmentRepository){
         return repository.save(entity)
     }
 
-    @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Long) {
+    fun delete(id: Long) {
         repository.deleteById(id)
     }
+}
+
+@RestController
+@RequestMapping("/department")
+class DepartmentController(val service: DepartmentService){
+
+    @GetMapping
+    fun all(): MutableList<Department> = service.findAll()
+
+    @GetMapping("/{id}")
+    fun get(@PathVariable id: Long): Department = service.findById(id)
+
+    @PostMapping
+    fun new(@RequestBody body: Department): Department = service.new(body)
+
+
+    @PutMapping("/{id}")
+    fun update(@RequestBody body: Department, @PathVariable id: Long): Department = service.update(body, id)
+
+    @DeleteMapping("/{id}")
+    fun delete(@PathVariable id: Long) = service.delete(id)
 
 }
