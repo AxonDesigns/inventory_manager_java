@@ -1,0 +1,53 @@
+---
+import "../styles/global.css";
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Astro description" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/sena_logo.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body>
+		<header>
+			<a class="header-title" href="/">Admin Module</a>
+			<nav>
+				<ul class="nav-links">
+					<li><a href="docs.html">Docs</a></li>
+					<li><a href="api_reference.html">API Reference</a></li>
+					<li><a href="about.html">About</a></li>
+				</ul>
+			</nav>
+		</header>
+		<main>
+			<aside>
+				<nav class="aside-links">
+					<ul id="aside-links">
+						<li><a href="/?table=city">City</a></li>
+						<li><a href="/?table=department">Department</a></li>
+						<li><a href="/?table=income">Income</a></li>
+						<li><a href="/?table=location">Location</a></li>
+						<li><a href="/?table=location_type">Location Type</a></li>
+						<li><a href="/?table=measure_unit">Measure Unit</a></li>
+						<li><a href="/?table=outcome">Outcome</a></li>
+						<li><a href="/?table=product">Product</a></li>
+						<li><a href="/?table=product_state">Product State</a></li>
+						<li><a href="/?table=product_type">Product Type</a></li>
+					</ul>
+				</nav>
+			</aside>
+			<div class="content">
+				<slot />
+			</div>
+		</main>
+	</body>
+</html>
