@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="main.js" defer></script>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="stylesheet" href="global.css">
+  <title>Sena's Inventory</title>
+</head>
+
+<body>
+  <header>
+    <a class="header-title" href="/">Administrator Module</a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="docs.html">Docs</a></li>
+        <li><a href="api_reference.html">API Reference</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div class="content">
+    <aside>
+      <h2 class="aside-title">Available Tables</h2>
+      <ul class="aside-links">
+        <li><a href="/?table=city">City</a></li>
+        <li><a href="/?table=department">Department</a></li>
+        <li><a href="/?table=income">Income</a></li>
+        <li><a href="/?table=location">Location</a></li>
+        <li><a href="/?table=location_type">Location Type</a></li>
+        <li><a href="/?table=measure_unit">Measure Unit</a></li>
+        <li><a href="/?table=outcome">Outcome</a></li>
+        <li><a href="/?table=product">Product</a></li>
+        <li><a href="/?table=product_state">Product State</a></li>
+        <li><a href="/?table=product_type">Product Type</a></li>
+      </ul>
+    </aside>
+    <main>
+      <div class="table-container" id="table-container"></div>
+    </main>
+  </div>
+</body>
+
+</html>
