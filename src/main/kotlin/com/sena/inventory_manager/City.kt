@@ -30,7 +30,11 @@ class City (
     @OneToMany(mappedBy = "city")
     @JsonIgnore
     val locations: List<Location> = mutableListOf()
-)
+){
+    constructor() : this(
+        description = ""
+    )
+}
 
 interface CityRepository : JpaRepository<City, Long>
 
@@ -71,7 +75,7 @@ class CityController(val service: CityService){
     fun all(): MutableList<City> = service.findAll()
 
     @GetMapping("/{id}")
-    fun get(@PathVariable id: Long): City = if(id > 0L) service.findById(id) else City(description = "")
+    fun get(@PathVariable id: Long): City = if(id > 0L) service.findById(id) else City()
 
     @PostMapping
     fun new(@RequestBody body: City): City = service.new(body)

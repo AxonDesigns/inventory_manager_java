@@ -24,7 +24,9 @@ class ProductState (
     /*@OneToMany(mappedBy = "city")
     @JsonIgnore
     val locations: List<Location> = mutableListOf()*/
-)
+){
+    constructor():this(description="")
+}
 
 interface ProductStateRepository : JpaRepository<ProductState, Long>
 
@@ -65,7 +67,7 @@ class ProductStateController(val service: ProductStateService){
     fun all(): MutableList<ProductState> = service.findAll()
 
     @GetMapping("/{id}")
-    fun get(@PathVariable id: Long): ProductState =  if(id > 0L) service.findById(id) else ProductState(description = "")
+    fun get(@PathVariable id: Long): ProductState =  if(id > 0L) service.findById(id) else ProductState()
 
     @PostMapping
     fun new(@RequestBody body: ProductState): ProductState = service.new(body)

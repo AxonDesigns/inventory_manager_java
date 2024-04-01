@@ -23,31 +23,11 @@ const { title } = Astro.props;
 			<nav>
 				<ul class="nav-links">
 					<li><a href="docs.html">Docs</a></li>
-					<li><a href="api_reference.html">API Reference</a></li>
+					<li><a href="api.html">API Reference</a></li>
 					<li><a href="about.html">About</a></li>
 				</ul>
 			</nav>
 		</header>
-		<main>
-			<aside>
-				<nav class="aside-links">
-					<ul id="aside-links">
-						<li><a href="/?table=city">City</a></li>
-						<li><a href="/?table=department">Department</a></li>
-						<li><a href="/?table=income">Income</a></li>
-						<li><a href="/?table=location">Location</a></li>
-						<li><a href="/?table=location_type">Location Type</a></li>
-						<li><a href="/?table=measure_unit">Measure Unit</a></li>
-						<li><a href="/?table=outcome">Outcome</a></li>
-						<li><a href="/?table=product">Product</a></li>
-						<li><a href="/?table=product_state">Product State</a></li>
-						<li><a href="/?table=product_type">Product Type</a></li>
-					</ul>
-				</nav>
-			</aside>
-			<div class="content">
-				<slot />
-			</div>
-		</main>
+		<slot />
 	</body>
 </html>

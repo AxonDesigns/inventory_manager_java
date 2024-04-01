@@ -30,7 +30,16 @@ class Product (
     /*@OneToMany(mappedBy = "city")
     @JsonIgnore
     val locations: List<Location> = mutableListOf()*/
-)
+) {
+    constructor() : this(
+        description = "",
+        name = "",
+        productType = ProductType(description = ""),
+        measureUnit = MeasureUnit(description = ""),
+        unitPrice = 1L,
+        unitReference = 1L
+    )
+}
 
 class ProductRequest (
     var name: String?,
@@ -81,13 +90,14 @@ class ProductService(
             throw ResponseStatusException(HttpStatus.NOT_FOUND)
         } else null
 
-        entity.name = body.name ?: entity.name
-        entity.description = body.description ?: entity.description
+        body.name?.let { entity.name = it }
+        body.description?.let { entity.description = it }
+        productType?.let { entity.productType = it }
+        measureUnit?.let { entity.measureUnit = it }
+        body.unitPrice?.let{entity.unitPrice = it}
+        body.unitReference?.let{entity.unitReference = it}
+
         entity.expiresOn = body.expiresOn
-        entity.productType = productType ?: entity.productType
-        entity.measureUnit = measureUnit ?: entity.measureUnit
-        entity.unitPrice = body.unitPrice ?: entity.unitPrice
-        entity.unitReference = body.unitReference ?: entity.unitReference
         entity.updatedOn = LocalDateTime.now()
 
         return repository.save(entity)
@@ -107,15 +117,7 @@ class ProductController(val service: ProductService){
     fun all(): MutableList<Product> = service.findAll()
 
     @GetMapping("/{id}")
-    fun get(@PathVariable id: Long): Product = if(id > 0L) service.findById(id) else
-        Product(
-            description = "",
-            name = "",
-            productType = ProductType(description = ""),
-            measureUnit = MeasureUnit(description = ""),
-            unitPrice = 1L,
-            unitReference = 1L,
-        )
+    fun get(@PathVariable id: Long): Product = if(id > 0L) service.findById(id) else Product()
 
     @PostMapping
     fun new(@RequestBody body: ProductRequest): Product = service.new(body)

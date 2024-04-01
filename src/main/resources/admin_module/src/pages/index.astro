@@ -1,8 +1,184 @@
 ---
 import Layout from "../layouts/Layout.astro";
+
+async function fetchAll(name: string) {
+	let res = await fetch(`http://localhost:8082/${name}`, {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+		},
+	});
+
+	let data = await res.json();
+
+	return data;
+}
+
+function hola() {
+	alert("HOLA");
+}
+
+let params = new URLSearchParams(Astro.url.searchParams);
+let tableName = params.get("table");
+
+let data = (await fetchAll(tableName)) as Array<string>;
+//let data = [];
+
+/*let obj = {
+	description: "Cesar",
+};
+
+fetch(`http://localhost:8082/${tableName}`, {
+	method: "POST",
+	headers: {
+		"Content-Type": "application/json",
+	},
+	body: JSON.stringify(obj),
+})
+	.then((response) => response.json())
+	.then((data) => {
+		console.log(data);
+	})
+	.catch((error) => {
+		console.error("Error:", error);
+	});*/
 ---
 
 <Layout title="Admin Module">
-	<h1>Content</h1>
-	<button onclick="alert('Hello World!')">Click me</button>
+	<main>
+		<aside>
+			<nav class="aside-links">
+				<ul id="aside-links">
+					<li><a href="/?table=city">City</a></li>
+					<li><a href="/?table=department">Department</a></li>
+					<li><a href="/?table=income">Income</a></li>
+					<li><a href="/?table=location">Location</a></li>
+					<li><a href="/?table=location_type">Location Type</a></li>
+					<li><a href="/?table=measure_unit">Measure Unit</a></li>
+					<li><a href="/?table=outcome">Outcome</a></li>
+					<li><a href="/?table=product">Product</a></li>
+					<li><a href="/?table=product_state">Product State</a></li>
+					<li><a href="/?table=product_type">Product Type</a></li>
+				</ul>
+			</nav>
+		</aside>
+		<div class="content">
+			{
+				data.length > 0 ? (
+					<table>
+						<thead>
+							<tr>
+								{Object.keys(data[0]).map((item) => (
+									<th>{item}</th>
+								))}
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{data.map((entry) => {
+								let keys = Object.keys(entry);
+								return (
+									<tr>
+										{keys.map((key) => (
+											<td>
+												{typeof entry[key] === "object"
+													? key === "name"
+														? entry[key]["name"]
+														: entry[key]["description"]
+													: entry[key]}
+											</td>
+										))}
+										<td>
+											<button id={"edit-" + entry["id"]}>Edit</button>
+											<button id={"delete-" + entry["id"]}>Delete</button>
+										</td>
+									</tr>
+								);
+							})}
+						</tbody>
+					</table>
+				) : (
+					<h1>No Records Found</h1>
+				)
+			}
+		</div>
+	</main>
 </Layout>
+
+<script>
+	let params = new URLSearchParams(window.location.search);
+	let tableName = params.get("table");
+
+	let elements = document.querySelectorAll("button");
+	let buttons = Array.from(elements);
+
+	let deletes = buttons.filter((item) => {
+		return item.id.includes("delete");
+	});
+
+	let edits = buttons.filter((item) => {
+		return item.id.includes("edit");
+	});
+	deletes.forEach((e) => {
+		e.addEventListener("click", () => deleteEntry(e.id.split("-")[1]));
+	});
+
+	function deleteEntry(id) {
+		fetch(`http://localhost:8082/${tableName}/${id}`, {
+			method: "DELETE",
+		})
+			.then((response) => {
+				return response.text();
+			})
+			.then((_) => {
+				window.location.reload();
+			})
+			.catch((error) => console.error("Error:", error));
+	}
+</script>
+
+<style>
+	.content {
+		flex: 1;
+		margin: 1rem;
+	}
+
+	main {
+		flex: 1;
+		display: flex;
+	}
+
+	.aside-links {
+		background-color: #181818;
+	}
+
+	.aside-links ul {
+		flex-direction: column;
+		margin: 0px;
+		padding: 1rem 2rem 1rem 1rem;
+	}
+
+	aside {
+		display: flex;
+	}
+
+	aside .aside-links {
+		flex: 1;
+	}
+
+	table {
+		border-collapse: collapse;
+		border-spacing: 0.5rem;
+	}
+
+	tr {
+		border: 1px solid #ffffff;
+		border-width: 1px 0px;
+		padding: 0.5rem;
+	}
+
+	th,
+	td {
+		padding: 0.5rem;
+	}
+</style>

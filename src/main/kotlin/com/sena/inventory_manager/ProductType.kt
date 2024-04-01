@@ -22,7 +22,9 @@ class ProductType (
     @OneToMany(mappedBy = "productType")
     @JsonIgnore
     val products: List<Product> = mutableListOf()
-)
+){
+    constructor():this(description="")
+}
 
 interface ProductTypeRepository : JpaRepository<ProductType, Long>
 

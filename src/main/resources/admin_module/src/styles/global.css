@@ -52,15 +52,7 @@ ul {
   list-style: none;
 }
 
-.aside-links {
-  background-color: #181818;
-}
 
-.aside-links ul {
-  flex-direction: column;
-  margin: 0px;
-  padding: 1rem 2rem 1rem 1rem;
-}
 
 a {
   text-decoration: none;
@@ -70,24 +62,4 @@ a {
 
 a:hover {
   color: #ffffff;
-}
-
-.content {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-main {
-  flex: 1;
-  display: flex;
-}
-
-aside {
-  display: flex;
-}
-
-aside .aside-links {
-  flex: 1;
 }

@@ -24,7 +24,9 @@ class LocationType (
     @OneToMany(mappedBy = "locationType")
     @JsonIgnore
     val locations: List<Location> = mutableListOf()
-)
+){
+    constructor() : this(description = "")
+}
 
 interface LocationTypeRepository : JpaRepository<LocationType, Long>
 
@@ -65,7 +67,7 @@ class LocationTypeController(val service: LocationTypeService){
     fun all(): MutableList<LocationType> = service.findAll()
 
     @GetMapping("/{id}")
-    fun get(@PathVariable id: Long): LocationType = if(id > 0L) service.findById(id) else LocationType(description = "")
+    fun get(@PathVariable id: Long): LocationType = if(id > 0L) service.findById(id) else LocationType()
 
     @PostMapping
     fun new(@RequestBody body: LocationType): LocationType = service.new(body)

@@ -24,7 +24,9 @@ class MeasureUnit (
     @OneToMany(mappedBy = "measureUnit")
     @JsonIgnore
     val products: List<Product> = mutableListOf()
-)
+){
+    constructor():this(description="")
+}
 
 interface MeasureUnitRepository : JpaRepository<MeasureUnit, Long>
 
@@ -65,7 +67,7 @@ class MeasureUnitController(val service: MeasureUnitService){
     fun all(): MutableList<MeasureUnit> = service.findAll()
 
     @GetMapping("/{id}")
-    fun get(@PathVariable id: Long): MeasureUnit = if(id > 0L) service.findById(id) else MeasureUnit(description = "")
+    fun get(@PathVariable id: Long): MeasureUnit = if(id > 0L) service.findById(id) else MeasureUnit()
 
     @PostMapping
     fun new(@RequestBody body: MeasureUnit): MeasureUnit = service.new(body)

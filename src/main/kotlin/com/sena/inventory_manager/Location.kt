@@ -23,7 +23,14 @@ class Location (
     var locationType: LocationType,
     var createdOn: LocalDateTime = LocalDateTime.now(),
     var updatedOn: LocalDateTime = LocalDateTime.now()
-)
+){
+    constructor() : this(
+        description = "",
+        city = City(),
+        department = Department(),
+        locationType = LocationType()
+    )
+}
 
 class LocationRequest(
     var description: String?,
@@ -81,10 +88,11 @@ class LocationService(
             throw ResponseStatusException(HttpStatus.NOT_FOUND)
         } else null
 
-        entity.description = body.description ?: entity.description
-        entity.city = city ?: entity.city
-        entity.department = department ?: entity.department
-        entity.locationType = locationType ?: entity.locationType
+        body.description?.let { entity.description = it }
+        city?.let { entity.city = it }
+        department?.let { entity.department = it }
+        locationType?.let { entity.locationType = it }
+
         entity.updatedOn = LocalDateTime.now()
 
         return repository.save(entity)
@@ -105,12 +113,7 @@ class LocationController(val service: LocationService){
 
     @GetMapping("/{id}")
     fun get(@PathVariable id: Long): Location = if(id > 0L) service.findById(id) else
-        Location(
-            description = "",
-            city = City(description = ""),
-            department = Department(description = ""),
-            locationType = LocationType(description = ""),
-            )
+        Location()
 
     @PostMapping
     fun new(@RequestBody body: LocationRequest): Location = service.new(body)

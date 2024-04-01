@@ -24,7 +24,11 @@ class Department (
     @OneToMany(mappedBy = "department")
     @JsonIgnore
     val locations: List<Location> = mutableListOf()
-)
+){
+    constructor() : this(
+        description = ""
+    )
+}
 
 interface DepartmentRepository : JpaRepository<Department, Long>
 
