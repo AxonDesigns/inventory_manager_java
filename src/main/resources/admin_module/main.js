@@ -1,35 +1,3 @@
-/*class DataTable extends HTMLElement {
-
-  static get observedAttributes() {
-    return ['url'];
-  }
-  constructor() {
-    super();
-  }
-
-  connectedCallback() {
-    const link = document.createElement("link");
-    link.setAttribute("rel", "stylesheet");
-    link.setAttribute("href", "data_table.css");
-
-    let shadow = this.attachShadow({ mode: 'open' });
-    let url = this.getAttribute('url');
-
-    shadow.appendChild(link);
-    shadow.innerHTML = `<h2>${url}</h2>`;
-  }
-
-  disconnectedCallback() {
-
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-
-  }
-}
-customElements.define('data-table', DataTable);
-*/
-
 function isValidDate(dateString) {
   const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?$/;
   return regex.test(dateString);
@@ -57,14 +25,14 @@ const url = 'http://localhost:8082/';
 let params = new URLSearchParams(window.location.search);
 let tableName = params.get('table');
 
-let tableContainer = document.getElementById('table-container');
+let $tableContainer = document.getElementById('table-container');
 
 function generateNewButton() {
   let newButton = document.createElement("a");
   newButton.classList.add("btn", "btn-primary");
   newButton.href = `edit.html?op=new&table=${tableName}`;
   newButton.innerText = "New Record";
-  tableContainer.appendChild(newButton);
+  return newButton;
 }
 
 function generateTitle(content) {
@@ -76,12 +44,12 @@ function generateTitle(content) {
 
 function generateTableTitle() {
   let tableTitle = generateTitle(tableName);
-  tableContainer.appendChild(tableTitle);
+  return tableTitle;
 }
 
 async function generateContent() {
   if (!tableName) {
-    tableContainer.appendChild(generateTitle("Select a table"));
+    $tableContainer.appendChild(generateTitle("Select a table"));
     return;
   }
 
@@ -94,7 +62,7 @@ async function generateContent() {
       }
     });
   } catch (error) {
-    tableContainer.appendChild(generateTitle("Table Not Found"));
+    $tableContainer.appendChild(generateTitle("Table Not Found"));
     return;
   }
 
@@ -102,12 +70,12 @@ async function generateContent() {
 
   if (json.length == 0) {
 
-    generateTableTitle();
-    generateNewButton();
+    $tableContainer.appendChild(generateTableTitle());
+    $tableContainer.appendChild(generateNewButton());
 
     let noData = document.createElement("p");
     noData.innerText = "No Records Found";
-    tableContainer.appendChild(noData);
+    $tableContainer.appendChild(noData);
     return;
   }
 
@@ -170,9 +138,9 @@ function generateTable(data) {
   table.appendChild(tbody);
 
   //append to table container
-  generateTableTitle();
-  generateNewButton();
-  tableContainer.appendChild(table);
+  $tableContainer.appendChild(generateTableTitle());
+  $tableContainer.appendChild(generateNewButton());
+  $tableContainer.appendChild(table);
 
 }
 

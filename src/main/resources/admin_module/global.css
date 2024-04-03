@@ -21,7 +21,7 @@
 html {
   background-color: var(--bg-color);
   font-family: "Poppins", system-ui, sans-serif;
-  color-scheme: light dark;
+  color-scheme: dark;
 }
 
 body {
