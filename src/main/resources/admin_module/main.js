@@ -30,7 +30,7 @@ let $tableContainer = document.getElementById('table-container');
 function generateNewButton() {
   let newButton = document.createElement("a");
   newButton.classList.add("btn", "btn-primary");
-  newButton.href = `edit.html?op=new&table=${tableName}`;
+  newButton.href = `edit.html?table=${tableName}&id=0`;
   newButton.innerText = "New Record";
   return newButton;
 }
@@ -82,6 +82,23 @@ async function generateContent() {
   generateTable(json);
 }
 
+function cellContent(item) {
+  if (item === null) {
+    return '-';
+  }
+
+  if (typeof item === 'object') {
+    if (item['name'] != null) return item['name'];
+
+
+    return item['description'];
+  }
+
+  if (isValidDate(item)) return formatDate(item);
+
+  return item;
+}
+
 function generateTable(data) {
 
   let table = document.createElement("table");
@@ -111,7 +128,8 @@ function generateTable(data) {
     let tbodyRow = document.createElement("tr");
     keys.forEach(key => {
       let td = document.createElement("td");
-      td.innerText = isValidDate(item[key]) ? formatDate(item[key]) : item[key];
+
+      td.innerText = cellContent(item[key]);
       tbodyRow.appendChild(td);
     })
 
@@ -119,13 +137,13 @@ function generateTable(data) {
     let td = document.createElement("td");
     let buttonsDiv = document.createElement("div");
     buttonsDiv.classList.add("btn-group");
-    let editButton = document.createElement("button");
+    let editButton = document.createElement("a");
     let deleteButton = document.createElement("button");
     editButton.innerText = "Edit";
     deleteButton.innerText = "Delete";
     editButton.classList.add("btn", "btn-warning");
     deleteButton.classList.add("btn", "btn-danger");
-    editButton.onclick = () => editEntry(item['id']);
+    editButton.href = `edit.html?table=${tableName}&id=${item['id']}`
     deleteButton.onclick = () => deleteEntry(item['id']);
     buttonsDiv.appendChild(editButton);
     buttonsDiv.appendChild(deleteButton);
@@ -145,7 +163,7 @@ function generateTable(data) {
 }
 
 function editEntry(id) {
-  console.log(id);
+  
 }
 
 async function deleteEntry(id) {
