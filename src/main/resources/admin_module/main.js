@@ -21,6 +21,8 @@ function formatSnake(str) {
   return str.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 }
 
+
+
 const url = 'http://localhost:8082/';
 let params = new URLSearchParams(window.location.search);
 let tableName = params.get('table');
@@ -162,9 +164,7 @@ function generateTable(data) {
 
 }
 
-function editEntry(id) {
-  
-}
+
 
 async function deleteEntry(id) {
   let res = await fetch(url + tableName + '/' + id, {

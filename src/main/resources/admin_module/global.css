@@ -226,3 +226,8 @@ tbody>tr:last-child {
   background-color: var(--warning-hover-color);
   color: var(--bg-color);
 }
+
+form{
+  display: flex;
+  flex-direction: column;
+}
