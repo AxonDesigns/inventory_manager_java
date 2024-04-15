@@ -1,4 +1,4 @@
-package com.sena.inventory_manager
+package com.sena.inventory_manager.entities
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
@@ -87,3 +87,4 @@ class CityController(val service: CityService){
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Long) = service.delete(id)
 }
+

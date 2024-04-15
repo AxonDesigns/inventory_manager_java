@@ -1,12 +1,9 @@
-package com.sena.inventory_manager
+package com.sena.inventory_manager.entities
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
-import org.jetbrains.annotations.NotNull
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDateTime

@@ -1,6 +1,5 @@
-package com.sena.inventory_manager
+package com.sena.inventory_manager.entities
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.http.HttpStatus

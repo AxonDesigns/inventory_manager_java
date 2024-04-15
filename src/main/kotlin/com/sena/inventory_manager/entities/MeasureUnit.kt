@@ -1,12 +1,10 @@
-package com.sena.inventory_manager
+package com.sena.inventory_manager.entities
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
-import org.jetbrains.annotations.NotNull
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDateTime
@@ -14,39 +12,37 @@ import java.time.LocalDateTime
 
 @Entity
 @Table
-class Department (
+class MeasureUnit (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
     var description: String,
     var createdOn: LocalDateTime = LocalDateTime.now(),
     var updatedOn: LocalDateTime = LocalDateTime.now(),
 
-    @OneToMany(mappedBy = "department")
+    @OneToMany(mappedBy = "measureUnit")
     @JsonIgnore
-    val locations: List<Location> = mutableListOf()
+    val products: List<Product> = mutableListOf()
 ){
-    constructor() : this(
-        description = ""
-    )
+    constructor():this(description="")
 }
 
-interface DepartmentRepository : JpaRepository<Department, Long>
+interface MeasureUnitRepository : JpaRepository<MeasureUnit, Long>
 
 @Service
-class DepartmentService(private val repository: DepartmentRepository){
+class MeasureUnitService(private val repository: MeasureUnitRepository){
 
-    fun findAll(): MutableList<Department> = repository.findAll()
+    fun findAll(): MutableList<MeasureUnit> = repository.findAll()
 
-    fun findById(id: Long): Department = repository.findById(id).orElseThrow{
+    fun findById(id: Long): MeasureUnit = repository.findById(id).orElseThrow{
         throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    fun new(body: Department): Department {
+    fun new(body: MeasureUnit): MeasureUnit {
         body.id = null
         return repository.save(body)
     }
 
-    fun update(body: Department, id: Long): Department {
+    fun update(body: MeasureUnit, id: Long): MeasureUnit {
         val entity = findById(id)
 
         entity.description = body.description
@@ -62,21 +58,20 @@ class DepartmentService(private val repository: DepartmentRepository){
 
 @RestController
 @CrossOrigin
-@RequestMapping("/department")
-class DepartmentController(val service: DepartmentService){
+@RequestMapping("/measure_unit")
+class MeasureUnitController(val service: MeasureUnitService){
 
     @GetMapping
-    fun all(): MutableList<Department> = service.findAll()
+    fun all(): MutableList<MeasureUnit> = service.findAll()
 
     @GetMapping("/{id}")
-    fun get(@PathVariable id: Long): Department = if(id > 0L) service.findById(id) else Department(description = "")
+    fun get(@PathVariable id: Long): MeasureUnit = if(id > 0L) service.findById(id) else MeasureUnit()
 
     @PostMapping
-    fun new(@RequestBody body: Department): Department = service.new(body)
-
+    fun new(@RequestBody body: MeasureUnit): MeasureUnit = service.new(body)
 
     @PutMapping("/{id}")
-    fun update(@RequestBody body: Department, @PathVariable id: Long): Department = service.update(body, id)
+    fun update(@RequestBody body: MeasureUnit, @PathVariable id: Long): MeasureUnit = service.update(body, id)
 
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Long) = service.delete(id)

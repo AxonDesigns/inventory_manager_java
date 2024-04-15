@@ -1,4 +1,4 @@
-package com.sena.inventory_manager
+package com.sena.inventory_manager.entities
 
 import jakarta.persistence.*
 import org.springframework.data.jpa.repository.JpaRepository
