@@ -1,6 +1,6 @@
 package com.sena.inventory_manager.services
 
-import org.springframework.beans.factory.annotation.Value
+/*import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.Resource
 import org.springframework.stereotype.Service
 import java.nio.charset.StandardCharsets
@@ -14,9 +14,6 @@ import java.util.Base64
 
 @Service
 class JwtUtilityService {
-
-
-
     fun loadPrivateKey(resource: Resource): PrivateKey{
         val keyBytes = Files.readAllBytes(Paths.get(resource.uri))
         val privateKeyPEM = String(keyBytes, StandardCharsets.UTF_8)
@@ -42,4 +39,4 @@ class JwtUtilityService {
         return keyFactory.generatePublic(PKCS8EncodedKeySpec(decodedKey))
 
     }
-}
+}*/

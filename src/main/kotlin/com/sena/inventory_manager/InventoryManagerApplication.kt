@@ -1,4 +1,4 @@
-package com.sena.inventory_manager.entities
+package com.sena.inventory_manager
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

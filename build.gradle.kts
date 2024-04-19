@@ -27,9 +27,13 @@ dependencies {
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("com.mysql:mysql-connector-j")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	implementation ("org.springframework.boot:spring-boot-starter-security")
-	testImplementation ("org.springframework.boot:spring-boot-starter-test")
-	testImplementation ("org.springframework.security:spring-security-test")
+
+	/*implementation ("org.springframework.boot:spring-boot-starter-security")
+	testImplementation ("org.springframework.security:spring-security-test")*/
+
+	testImplementation("org.mockito:mockito-core")
+
+	runtimeOnly("com.h2database:h2")
 }
 
 tasks.withType<KotlinCompile> {

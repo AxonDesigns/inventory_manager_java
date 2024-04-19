@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDateTime
@@ -39,7 +41,7 @@ class City (
 interface CityRepository : JpaRepository<City, Long>
 
 @Service
-class CityService(private val repository: CityRepository){
+class CityService(val repository: CityRepository){
 
     fun findAll(): MutableList<City> = repository.findAll()
 
@@ -78,7 +80,8 @@ class CityController(val service: CityService){
     fun get(@PathVariable id: Long): City = if(id > 0L) service.findById(id) else City()
 
     @PostMapping
-    fun new(@RequestBody body: City): City = service.new(body)
+    @ResponseStatus(HttpStatus.CREATED)
+    fun new(@RequestBody city: City): ResponseEntity<City> = ResponseEntity<City>(service.new(city), HttpStatus.CREATED)
 
     @PutMapping("/{id}")
     fun update(@RequestBody body: City, @PathVariable id: Long): City = service.update(body, id)
