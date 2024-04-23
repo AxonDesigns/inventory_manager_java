@@ -34,9 +34,9 @@ class Location (
 
 class LocationRequest(
     var description: String?,
-    var cityId: Long?,
-    var departmentId: Long?,
-    var locationTypeId: Long?,
+    var city: Long?,
+    var department: Long?,
+    var locationType: Long?,
 )
 
 interface LocationRepository : JpaRepository<Location, Long>
@@ -56,15 +56,15 @@ class LocationService(
     }
 
     fun new(body: LocationRequest): Location {
-        val city = cityRepository.findById(body.cityId!!).orElseThrow{
+        val city = cityRepository.findById(body.city!!).orElseThrow{
             throw ResponseStatusException(HttpStatus.NOT_FOUND)
         }
 
-        val department = departmentRepository.findById(body.departmentId!!).orElseThrow{
+        val department = departmentRepository.findById(body.department!!).orElseThrow{
             throw ResponseStatusException(HttpStatus.NOT_FOUND)
         }
 
-        val locationType = locationTypeRepository.findById(body.locationTypeId!!).orElseThrow{
+        val locationType = locationTypeRepository.findById(body.locationType!!).orElseThrow{
             throw ResponseStatusException(HttpStatus.NOT_FOUND)
         }
 
@@ -76,15 +76,15 @@ class LocationService(
             throw ResponseStatusException(HttpStatus.NOT_FOUND)
         }
 
-        val city = if(body.cityId != null) cityRepository.findById(body.cityId!!).orElseThrow{
+        val city = if(body.city != null) cityRepository.findById(body.city!!).orElseThrow{
             throw ResponseStatusException(HttpStatus.NOT_FOUND)
         } else null
 
-        val department = if(body.departmentId != null) departmentRepository.findById(body.departmentId!!).orElseThrow{
+        val department = if(body.department != null) departmentRepository.findById(body.department!!).orElseThrow{
             throw ResponseStatusException(HttpStatus.NOT_FOUND)
         } else null
 
-        val locationType = if(body.locationTypeId != null) locationTypeRepository.findById(body.locationTypeId!!).orElseThrow{
+        val locationType = if(body.locationType != null) locationTypeRepository.findById(body.locationType!!).orElseThrow{
             throw ResponseStatusException(HttpStatus.NOT_FOUND)
         } else null
 

@@ -88,28 +88,46 @@ function editEntry(id) {
 function onSubmit(event) {
     event.preventDefault();
     let data = new FormData($form);
+    let body = {}
     if (id == 0) {
-        console.log(url + tableName);
-        for (const pair of formData.entries()) {
-            console.log(pair[0], pair[1]);
-          }
-        /*fetch(url + tableName,
+        for (const pair of data.entries()) {
+            let value = pair[1]
+            body[pair[0]] = isNaN(value)? value : parseInt(value);
+        }
+
+        fetch(url + tableName,
             {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
                 method: "POST",
-                body: data.,
+                body: JSON.stringify(body),
             })
             .then(function (res) { console.log(res) })
-            .catch(function (res) { console.log(res) })*/
+            .catch(function (res) { console.log(res) })
     }
     else {
-
+        for (const pair of data.entries()) {
+            let value = pair[1]
+            body[pair[0]] = isNaN(value)? value : parseInt(value);
+        }
+        console.log(url + tableName + "/" + id)
+        console.log(JSON.stringify(body))
+        fetch(url + tableName + "/" + id,
+            {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                method: "PUT",
+                body: JSON.stringify(body),
+            })
+            .then(function (res) { console.log(res) })
+            .catch(function (res) { console.log(res) })
     }
 
-    
+    window.location.replace("/?table=" + tableName)
 }
 
 generateForm();

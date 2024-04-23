@@ -1,6 +1,6 @@
 package com.sena.inventory_manager.config
 
-import org.springframework.context.annotation.Configuration
+/*import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
@@ -26,4 +26,4 @@ class Cors : WebMvcConfigurer{
             .maxAge(3600)
     }
 
-}
+}*/

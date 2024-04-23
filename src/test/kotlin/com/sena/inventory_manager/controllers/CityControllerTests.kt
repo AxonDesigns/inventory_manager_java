@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatcher
 import org.mockito.ArgumentMatchers
 import org.mockito.BDDMockito.given
+import org.mockito.BDDMockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -43,11 +44,12 @@ class CityControllerTests {
 
     @Test
     fun `Test city creation`(){
-        given(service.new(city)).willReturn(city)
+         `when`(service.new(city)).thenReturn(city)
 
         val response = mockMvc.perform(post("/city")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(city)))
+            .content(objectMapper.writeValueAsString(city))
+        )
 
         response.andExpect(MockMvcResultMatchers.status().isCreated).andDo(MockMvcResultHandlers.print())
     }
