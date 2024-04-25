@@ -34,6 +34,7 @@ dependencies {
 	testImplementation("org.mockito:mockito-core")
 
 	runtimeOnly("com.h2database:h2")
+	implementation(kotlin("stdlib"))
 }
 
 tasks.withType<KotlinCompile> {
