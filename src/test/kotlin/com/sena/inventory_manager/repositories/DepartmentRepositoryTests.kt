@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import java.time.LocalDateTime
 
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
@@ -18,10 +17,10 @@ class DepartmentRepositoryTests(
 
     @Test
     fun `Test post department`(){
-        val savedCity = repository.save(Department(description = "New Department"))
+        val savedDepartment = repository.save(Department(description = "New Department"))
 
-        Assertions.assertThat(savedCity).isNotNull
-        Assertions.assertThat(savedCity.id).isGreaterThan(0)
+        Assertions.assertThat(savedDepartment).isNotNull
+        Assertions.assertThat(savedDepartment.id).isGreaterThan(0)
     }
 
     @Test
@@ -64,12 +63,12 @@ class DepartmentRepositoryTests(
 
     @Test
     fun `Test delete department by id`(){
-        val city = repository.save(Department(description = "New Department"))
+        val department = repository.save(Department(description = "New Department"))
 
-        repository.deleteById(city.id!!)
+        repository.deleteById(department.id!!)
 
-        val cityReturn = repository.findById(city.id!!)
+        val departmentReturn = repository.findById(department.id!!)
 
-        Assertions.assertThat(cityReturn).isEmpty
+        Assertions.assertThat(departmentReturn).isEmpty
     }
 }
