@@ -12,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
-class MeasureUnitRepositoryTest(
+class MeasureUnitRepositoryTests(
     @Autowired val repository: MeasureUnitRepository
 ) {
 

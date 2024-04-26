@@ -26,8 +26,8 @@ class ProductStateRepositoryTests(
 
     @Test
     fun `Test get all cities`(){
-        val productState1 = ProductState(description = "A City")
-        val productState2 = ProductState(description = "Yet Another City")
+        val productState1 = ProductState(description = "A ProductState")
+        val productState2 = ProductState(description = "Yet Another ProductState")
 
         repository.save(productState1)
         repository.save(productState2)
