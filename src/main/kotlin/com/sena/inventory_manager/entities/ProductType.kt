@@ -37,12 +37,12 @@ class ProductTypeService(private val repository: ProductTypeRepository){
         throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
-    fun new(body: ProductState): ProductType {
+    fun new(body: ProductType): ProductType {
         body.id = null
         return repository.save(body)
     }
 
-    fun update(body: ProductState, id: Long): ProductType {
+    fun update(body: ProductType, id: Long): ProductType {
         val entity = findById(id)
 
         entity.description = body.description

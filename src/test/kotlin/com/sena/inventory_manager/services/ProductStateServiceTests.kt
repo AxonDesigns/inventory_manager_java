@@ -17,7 +17,7 @@ class ProductStateServiceTests {
     @Mock
     private lateinit var repository: ProductStateRepository
     @InjectMocks
-    private lateinit var service: ProductTypeService
+    private lateinit var service: ProductStateService
 
     private lateinit var productState: ProductState
     private lateinit var productStates: List<ProductState>
@@ -29,7 +29,7 @@ class ProductStateServiceTests {
     }
 
     @Test
-    fun `Test create new city`(){
+    fun `Test create new ProductState`(){
         Mockito.`when`(repository.save(Mockito.any(ProductState::class.java))).thenReturn(productState)
 
         val savedProductState = service.new(productState)

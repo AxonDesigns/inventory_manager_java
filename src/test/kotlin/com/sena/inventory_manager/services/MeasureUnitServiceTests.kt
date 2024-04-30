@@ -29,7 +29,7 @@ class MeasureUnitServiceTests {
     }
 
     @Test
-    fun `Test create new city`(){
+    fun `Test create new MeasureUnit`(){
         Mockito.`when`(repository.save(Mockito.any(MeasureUnit::class.java))).thenReturn(measureUnit)
 
         val savedMeasureUnit = service.new(measureUnit)
