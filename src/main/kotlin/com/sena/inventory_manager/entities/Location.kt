@@ -68,6 +68,8 @@ class LocationService(
             throw ResponseStatusException(HttpStatus.NOT_FOUND)
         }
 
+        if (body.description == null || body.department == null || body.locationType == null) throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+
         return repository.save(Location(null, body.description!!, city!!, department!!, locationType!!))
     }
 

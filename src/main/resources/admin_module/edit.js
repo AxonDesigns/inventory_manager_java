@@ -123,11 +123,11 @@ function onSubmit(event) {
                 method: "PUT",
                 body: JSON.stringify(body),
             })
-            .then(function (res) { console.log(res) })
+            .then(function (res) { window.location.replace("/?table=" + tableName) })
             .catch(function (res) { console.log(res) })
     }
 
-    window.location.replace("/?table=" + tableName)
+    
 }
 
 generateForm();
