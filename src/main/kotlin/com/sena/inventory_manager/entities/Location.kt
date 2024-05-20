@@ -49,7 +49,7 @@ class LocationService(
     val locationTypeRepository: LocationTypeRepository
 ){
 
-    fun findAll(): MutableList<Location> = repository.findAll()
+    fun findAll(): List<Location> = repository.findAll()
 
     fun findById(id: Long): Location = repository.findById(id).orElseThrow{
         throw ResponseStatusException(HttpStatus.NOT_FOUND)
@@ -111,13 +111,14 @@ class LocationService(
 class LocationController(val service: LocationService){
 
     @GetMapping
-    fun all(): MutableList<Location> = service.findAll()
+    fun all(): List<Location> = service.findAll()
 
     @GetMapping("/{id}")
     fun get(@PathVariable id: Long): Location = if(id > 0L) service.findById(id) else
         Location()
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     fun new(@RequestBody body: LocationRequest): Location = service.new(body)
 
     @PutMapping("/{id}")

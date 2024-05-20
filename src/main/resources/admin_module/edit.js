@@ -92,7 +92,7 @@ function onSubmit(event) {
     if (id == 0) {
         for (const pair of data.entries()) {
             let value = pair[1]
-            body[pair[0]] = isNaN(value)? value : parseInt(value);
+            body[pair[0]] = isNaN(value) ? value : parseInt(value);
         }
 
         fetch(url + tableName,
@@ -104,13 +104,13 @@ function onSubmit(event) {
                 method: "POST",
                 body: JSON.stringify(body),
             })
-            .then(function (res) { console.log(res) })
+            .then(function (res) { window.location.replace("/?table=" + tableName) })
             .catch(function (res) { console.log(res) })
     }
     else {
         for (const pair of data.entries()) {
             let value = pair[1]
-            body[pair[0]] = isNaN(value)? value : parseInt(value);
+            body[pair[0]] = isNaN(value) ? value : parseInt(value);
         }
         console.log(url + tableName + "/" + id)
         console.log(JSON.stringify(body))
@@ -123,11 +123,13 @@ function onSubmit(event) {
                 method: "PUT",
                 body: JSON.stringify(body),
             })
-            .then(function (res) { window.location.replace("/?table=" + tableName) })
+            .then(function (res) {
+                window.location.replace("/?table=" + tableName)
+            })
             .catch(function (res) { console.log(res) })
     }
 
-    
+
 }
 
 generateForm();

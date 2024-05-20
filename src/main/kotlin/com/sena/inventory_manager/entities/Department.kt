@@ -33,7 +33,7 @@ interface DepartmentRepository : JpaRepository<Department, Long>
 @Service
 class DepartmentService(private val repository: DepartmentRepository){
 
-    fun findAll(): MutableList<Department> = repository.findAll()
+    fun findAll(): List<Department> = repository.findAll()
 
     fun findById(id: Long): Department = repository.findById(id).orElseThrow{
         throw ResponseStatusException(HttpStatus.NOT_FOUND)
@@ -64,12 +64,13 @@ class DepartmentService(private val repository: DepartmentRepository){
 class DepartmentController(val service: DepartmentService){
 
     @GetMapping
-    fun all(): MutableList<Department> = service.findAll()
+    fun all(): List<Department> = service.findAll()
 
     @GetMapping("/{id}")
     fun get(@PathVariable id: Long): Department = if(id > 0L) service.findById(id) else Department(description = "")
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     fun new(@RequestBody body: Department): Department = service.new(body)
 
 

@@ -30,7 +30,7 @@ interface ProductStateRepository : JpaRepository<ProductState, Long>
 @Service
 class ProductStateService(private val repository: ProductStateRepository){
 
-    fun findAll(): MutableList<ProductState> = repository.findAll()
+    fun findAll(): List<ProductState> = repository.findAll()
 
     fun findById(id: Long): ProductState = repository.findById(id).orElseThrow{
         throw ResponseStatusException(HttpStatus.NOT_FOUND)
@@ -61,12 +61,13 @@ class ProductStateService(private val repository: ProductStateRepository){
 class ProductStateController(val service: ProductStateService){
 
     @GetMapping
-    fun all(): MutableList<ProductState> = service.findAll()
+    fun all(): List<ProductState> = service.findAll()
 
     @GetMapping("/{id}")
     fun get(@PathVariable id: Long): ProductState =  if(id > 0L) service.findById(id) else ProductState()
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     fun new(@RequestBody body: ProductState): ProductState = service.new(body)
 
     @PutMapping("/{id}")

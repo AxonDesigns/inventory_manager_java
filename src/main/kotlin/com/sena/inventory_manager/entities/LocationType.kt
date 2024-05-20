@@ -31,7 +31,7 @@ interface LocationTypeRepository : JpaRepository<LocationType, Long>
 @Service
 class LocationTypeService(private val repository: LocationTypeRepository){
 
-    fun findAll(): MutableList<LocationType> = repository.findAll()
+    fun findAll(): List<LocationType> = repository.findAll()
 
     fun findById(id: Long): LocationType = repository.findById(id).orElseThrow{
         throw ResponseStatusException(HttpStatus.NOT_FOUND)
@@ -62,12 +62,13 @@ class LocationTypeService(private val repository: LocationTypeRepository){
 class LocationTypeController(val service: LocationTypeService){
 
     @GetMapping
-    fun all(): MutableList<LocationType> = service.findAll()
+    fun all(): List<LocationType> = service.findAll()
 
     @GetMapping("/{id}")
     fun get(@PathVariable id: Long): LocationType = if(id > 0L) service.findById(id) else LocationType()
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     fun new(@RequestBody body: LocationType): LocationType = service.new(body)
 
 

@@ -43,7 +43,7 @@ interface CityRepository : JpaRepository<City, Long>
 @Service
 class CityService(val repository: CityRepository){
 
-    fun findAll(): MutableList<City> = repository.findAll()
+    fun findAll(): List<City> = repository.findAll()
 
     fun findById(id: Long): City = repository.findById(id).orElseThrow{
         throw ResponseStatusException(HttpStatus.NOT_FOUND)
@@ -74,7 +74,7 @@ class CityService(val repository: CityRepository){
 class CityController(val service: CityService){
 
     @GetMapping
-    fun all(): MutableList<City> = service.findAll()
+    fun all(): List<City> = service.findAll()
 
     @GetMapping("/{id}")
     fun get(@PathVariable id: Long): City = if(id > 0L) service.findById(id) else City()

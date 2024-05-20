@@ -31,7 +31,7 @@ interface MeasureUnitRepository : JpaRepository<MeasureUnit, Long>
 @Service
 class MeasureUnitService(private val repository: MeasureUnitRepository){
 
-    fun findAll(): MutableList<MeasureUnit> = repository.findAll()
+    fun findAll(): List<MeasureUnit> = repository.findAll()
 
     fun findById(id: Long): MeasureUnit = repository.findById(id).orElseThrow{
         throw ResponseStatusException(HttpStatus.NOT_FOUND)
@@ -62,12 +62,13 @@ class MeasureUnitService(private val repository: MeasureUnitRepository){
 class MeasureUnitController(val service: MeasureUnitService){
 
     @GetMapping
-    fun all(): MutableList<MeasureUnit> = service.findAll()
+    fun all(): List<MeasureUnit> = service.findAll()
 
     @GetMapping("/{id}")
     fun get(@PathVariable id: Long): MeasureUnit = if(id > 0L) service.findById(id) else MeasureUnit()
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     fun new(@RequestBody body: MeasureUnit): MeasureUnit = service.new(body)
 
     @PutMapping("/{id}")

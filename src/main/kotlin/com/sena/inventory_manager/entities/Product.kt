@@ -59,7 +59,7 @@ class ProductService(
     val measureUnitRepository: MeasureUnitRepository
 ){
 
-    fun findAll(): MutableList<Product> = repository.findAll()
+    fun findAll(): List<Product> = repository.findAll()
 
     fun findById(id: Long): Product = repository.findById(id).orElseThrow{
         throw ResponseStatusException(HttpStatus.NOT_FOUND)
@@ -113,12 +113,13 @@ class ProductService(
 class ProductController(val service: ProductService){
 
     @GetMapping
-    fun all(): MutableList<Product> = service.findAll()
+    fun all(): List<Product> = service.findAll()
 
     @GetMapping("/{id}")
     fun get(@PathVariable id: Long): Product = if(id > 0L) service.findById(id) else Product()
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     fun new(@RequestBody body: ProductRequest): Product = service.new(body)
 
     @PutMapping("/{id}")
